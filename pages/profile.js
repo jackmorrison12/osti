@@ -14,7 +14,17 @@ export default function Profile({ user, lastfm }) {
       {lastfm ? (
         <p>You're lastfm account is connected as {lastfm}</p>
       ) : (
-          <a href={"http://www.last.fm/api/auth/?api_key=" + process.env.LASTFM_KEY + "&cb=" + process.env.NEXTAUTH_URL + "/api/auth/lastfm"}>Connect to lastfm</a>
+        <a
+          href={
+            "http://www.last.fm/api/auth/?api_key=" +
+            process.env.LASTFM_KEY +
+            "&cb=" +
+            process.env.NEXTAUTH_URL +
+            "/api/auth/lastfm"
+          }
+        >
+          Connect to lastfm
+        </a>
       )}
 
       <p className="m-2 text-l">
