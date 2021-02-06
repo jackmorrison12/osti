@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     token: req.query.token,
     handlers: {
       success: async function (session) {
-        await db.collection("users").update(
+        await db.collection("users").updateOne(
           { _id: ObjectId(global_session.id) },
           {
             $set: {

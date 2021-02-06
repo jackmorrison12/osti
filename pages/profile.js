@@ -3,8 +3,9 @@ import Link from "next/link";
 import { connectToDatabase } from "../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
+import { google } from "googleapis";
 
-export default function Profile({ user, lastfm }) {
+export default function Profile({ user, lastfm, google_url }) {
   return (
     <>
       <Head>
@@ -32,7 +33,11 @@ export default function Profile({ user, lastfm }) {
             Connect to lastfm
           </a>
         )}
-
+        {!google_url ? (
+          <p>You're Google Fit account is connected </p>
+        ) : (
+          <a href={google_url}>Connect to google</a>
+        )}
         <p className="m-2 text-l">
           Return to{" "}
           <Link href="/">
@@ -55,11 +60,34 @@ export async function getServerSideProps(ctx) {
   }
 
   const user = await db.collection("users").findOne(ObjectId(session.id));
+  let url = null;
+
+  if (!user.google_refresh_token) {
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_ID,
+      process.env.GOOGLE_SECRET,
+      process.env.NEXTAUTH_URL + "/api/auth/google"
+    );
+
+    const scopes = [
+      "https://www.googleapis.com/auth/fitness.activity.read",
+      "https://www.googleapis.com/auth/fitness.heart_rate.read",
+      "https://www.googleapis.com/auth/fitness.location.read",
+      "https://www.googleapis.com/auth/fitness.sleep.read",
+      "https://www.googleapis.com/auth/fitness.body.read",
+    ];
+
+    url = oauth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: scopes,
+    });
+  }
 
   return {
     props: {
       user: session.user,
       lastfm: user.lastfm_username ? user.lastfm_username : null,
+      google_url: url,
     },
   };
 }
