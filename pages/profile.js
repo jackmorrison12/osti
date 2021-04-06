@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import Head from "next/head";
 import { google } from "googleapis";
 
-export default function Profile({ user, lastfm, google_url }) {
+export default function Profile({ user, lastfm, google_url, status }) {
   return (
     <>
       <Head>
@@ -38,6 +38,9 @@ export default function Profile({ user, lastfm, google_url }) {
         ) : (
           <a href={google_url}>Connect to google</a>
         )}
+
+        {status == "api_linked" ? <p>Both connected</p> : ""}
+
         <p className="m-2 text-l">
           Return to{" "}
           <Link href="/">
@@ -62,7 +65,7 @@ export async function getServerSideProps(ctx) {
   const user = await db.collection("users").findOne(ObjectId(session.id));
   let url = null;
 
-  if (!user.google_refresh_token) {
+  if (!user.google_tokens) {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_ID,
       process.env.GOOGLE_SECRET,
@@ -88,6 +91,7 @@ export async function getServerSideProps(ctx) {
       user: session.user,
       lastfm: user.lastfm_username ? user.lastfm_username : null,
       google_url: url,
+      status: user.status,
     },
   };
 }

@@ -16,12 +16,20 @@ export default async function handler(req, res) {
   const { db } = await connectToDatabase();
   const global_session = await getSession({ req });
 
+  // Get the status variable
+  const status = await db
+    .collection("users")
+    .find({ _id: ObjectId(global_session.id) })
+    .project({ status: 1, _id: 0 })
+    .toArray();
+
   // Store google token object
   await db.collection("users").updateOne(
     { _id: ObjectId(global_session.id) },
     {
       $set: {
         google_tokens: tokens,
+        status: status[0].status ? "api_linked" : "googlefit_linked",
       },
     },
     { upsert: true }

@@ -13,6 +13,13 @@ export default async function handler(req, res) {
     useragent: "osti/v0.1 Osti",
   });
 
+  // Get the status variable
+  const status = await db
+    .collection("users")
+    .find({ _id: ObjectId(global_session.id) })
+    .project({ status: 1, _id: 0 })
+    .toArray();
+
   lastfm.session({
     token: req.query.token,
     handlers: {
@@ -23,6 +30,7 @@ export default async function handler(req, res) {
             $set: {
               lastfm_key: session.key,
               lastfm_username: session.user,
+              status: status[0].status ? "api_linked" : "lastfm_linked",
             },
           },
           { upsert: true }
