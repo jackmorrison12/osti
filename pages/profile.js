@@ -78,8 +78,15 @@ export default function Profile({
 
         {!["none", "googlefit_linked", "lastfm_linked"].includes(status) ? (
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-5"
+            className={
+              "text-white font-bold py-2 px-4 rounded-full mt-5 " +
+              (status == "api_linked"
+                ? "hover:bg-blue-700 bg-blue-500"
+                : "bg-blue-300")
+            }
+            style={status != "api_linked" ? { cursor: "default" } : {}}
             onClick={() => setup(user_id)}
+            disabled={status != "api_linked"}
           >
             Fetch Data: {result}
           </button>
