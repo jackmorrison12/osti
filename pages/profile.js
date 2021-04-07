@@ -32,7 +32,7 @@ export default function Profile({
     var url =
       process.env.NODE_ENV === "development"
         ? "http://localhost:4000"
-        : "https://pumpkin-crisp-77068.herokuapp.com";
+        : "https://fetcher.osti.uk";
 
     fetch(url + "/setup", requestOptions)
       .then((response) => response.json())
