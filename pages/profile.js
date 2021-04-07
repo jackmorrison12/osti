@@ -4,8 +4,45 @@ import { connectToDatabase } from "../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
 import { google } from "googleapis";
+import { useState } from "react";
 
-export default function Profile({ user, lastfm, google_url, status }) {
+export default function Profile({
+  user,
+  lastfm,
+  google_url,
+  status,
+  user_id,
+  backend_url,
+}) {
+  const [result, setResult] = useState("");
+
+  const setup = (user_id) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("user_id", user_id);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: urlencoded,
+      redirect: "follow",
+    };
+    var url =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:4000"
+        : "https://fetcher.osti.uk";
+
+    fetch(url + "/test", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result[0].status);
+        setResult(result[0].status);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   return (
     <>
       <Head>
@@ -39,7 +76,16 @@ export default function Profile({ user, lastfm, google_url, status }) {
           <a href={google_url}>Connect to google</a>
         )}
 
-        {status == "api_linked" ? <p>Both connected</p> : ""}
+        {status == "api_linked" ? (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-5"
+            onClick={() => setup(user_id)}
+          >
+            Fetch Data: {result}
+          </button>
+        ) : (
+          ""
+        )}
 
         <p className="m-2 text-l">
           Return to{" "}
@@ -92,6 +138,8 @@ export async function getServerSideProps(ctx) {
       lastfm: user.lastfm_username ? user.lastfm_username : null,
       google_url: url,
       status: user.status,
+      user_id: session.id,
+      backend_url: process.env.BACKEND_URL,
     },
   };
 }
