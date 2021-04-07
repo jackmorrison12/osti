@@ -14,7 +14,7 @@ export default function Profile({
   user_id,
   backend_url,
 }) {
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState(status);
 
   const setup = (user_id) => {
     var myHeaders = new Headers();
@@ -34,11 +34,11 @@ export default function Profile({
         ? "http://localhost:4000"
         : "https://pumpkin-crisp-77068.herokuapp.com";
 
-    fetch(url + "/test", requestOptions)
+    fetch(url + "/setup", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result[0].status);
-        setResult(result[0].status);
+        console.log(result);
+        setResult(result);
       })
       .catch((error) => console.log("error", error));
   };
@@ -76,7 +76,7 @@ export default function Profile({
           <a href={google_url}>Connect to google</a>
         )}
 
-        {status == "api_linked" ? (
+        {!["none", "googlefit_linked", "lastfm_linked"].includes(status) ? (
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-5"
             onClick={() => setup(user_id)}
@@ -137,7 +137,7 @@ export async function getServerSideProps(ctx) {
       user: session.user,
       lastfm: user.lastfm_username ? user.lastfm_username : null,
       google_url: url,
-      status: user.status,
+      status: user.status ? user.status : "none",
       user_id: session.id,
       backend_url: process.env.BACKEND_URL,
     },
