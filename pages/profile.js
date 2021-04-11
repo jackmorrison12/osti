@@ -128,9 +128,7 @@ export async function getServerSideProps(ctx) {
     const scopes = [
       "https://www.googleapis.com/auth/fitness.activity.read",
       "https://www.googleapis.com/auth/fitness.heart_rate.read",
-      "https://www.googleapis.com/auth/fitness.location.read",
       "https://www.googleapis.com/auth/fitness.sleep.read",
-      "https://www.googleapis.com/auth/fitness.body.read",
     ];
 
     url = oauth2Client.generateAuthUrl({
