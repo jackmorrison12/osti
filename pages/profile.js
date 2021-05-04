@@ -136,6 +136,7 @@ export async function getServerSideProps(ctx) {
       "https://www.googleapis.com/auth/fitness.activity.read",
       "https://www.googleapis.com/auth/fitness.heart_rate.read",
       "https://www.googleapis.com/auth/fitness.sleep.read",
+      "https://www.googleapis.com/auth/fitness.location.read",
     ];
 
     url = oauth2Client.generateAuthUrl({
