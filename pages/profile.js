@@ -54,7 +54,7 @@ export default function Profile({
         <img className="inline" src={user.image} />
         <p className="m-6 text-xl">Welcome to Osti {user.name}!</p>
         {lastfm ? (
-          <p>You're lastfm account is connected as {lastfm}</p>
+          <p>Your lastfm account is connected as {lastfm}</p>
         ) : (
           <a
             href={
@@ -76,7 +76,7 @@ export default function Profile({
         )}
         <br />
         {!google_url ? (
-          <p>You're Google Fit account is connected </p>
+          <p>Your Google Fit account is connected </p>
         ) : (
           <a href={google_url}>
             {" "}
