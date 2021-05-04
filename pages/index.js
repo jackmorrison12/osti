@@ -29,7 +29,6 @@ export default function Home({ user, status, user_id }) {
           <>
             {!session && (
               <>
-                Not signed in <br />
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                   onClick={() => signIn("google")}
@@ -81,9 +80,13 @@ export async function getServerSideProps(ctx) {
   const { db } = await connectToDatabase();
 
   if (!session) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
-    return {};
+    return {
+      props: {
+        user: null,
+        status: "none",
+        user_id: null,
+      },
+    };
   }
 
   const user = await db.collection("users").findOne(ObjectId(session.id));
