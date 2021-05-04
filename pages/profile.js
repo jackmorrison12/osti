@@ -52,9 +52,7 @@ export default function Profile({
       <div className="container mx-auto text-center">
         <h1 className="text-6xl m-12">Profile Page</h1>
         <img className="inline" src={user.image} />
-        <p className="m-6 text-xl">
-          Welcome {user.name} - this page can only be seen by a logged in user!
-        </p>
+        <p className="m-6 text-xl">Welcome to Osti {user.name}!</p>
         {lastfm ? (
           <p>You're lastfm account is connected as {lastfm}</p>
         ) : (
@@ -67,13 +65,29 @@ export default function Profile({
               "/api/auth/lastfm"
             }
           >
-            Connect to lastfm
+            <button
+              className={
+                "text-white font-bold py-2 px-4 rounded-full mt-5 hover:bg-lastfm-light bg-lastfm"
+              }
+            >
+              Connect to lastfm
+            </button>
           </a>
         )}
+        <br />
         {!google_url ? (
           <p>You're Google Fit account is connected </p>
         ) : (
-          <a href={google_url}>Connect to google</a>
+          <a href={google_url}>
+            {" "}
+            <button
+              className={
+                "text-white font-bold py-2 px-4 rounded-full mt-5 hover:bg-google-light bg-google"
+              }
+            >
+              Connect to google
+            </button>
+          </a>
         )}
 
         {!["none", "googlefit_linked", "lastfm_linked"].includes(status) ? (
@@ -93,13 +107,6 @@ export default function Profile({
         ) : (
           ""
         )}
-
-        <p className="m-2 text-l">
-          Return to{" "}
-          <Link href="/">
-            <a className="text-blue-500 hover:underline">home</a>
-          </Link>
-        </p>
       </div>
     </>
   );

@@ -1,8 +1,19 @@
 module.exports = {
   purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: "media", // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        lastfm: {
+          DEFAULT: "#c3000d",
+          light: "#d1626a",
+        },
+        google: {
+          DEFAULT: "#3cba54",
+          light: "#89c995",
+        },
+      },
+    },
   },
   variants: {
     extend: {},
