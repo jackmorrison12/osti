@@ -4,15 +4,7 @@ import { connectToDatabase } from "../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
 
-export default function Recommendations({
-  user,
-  status,
-  user_id,
-  v1,
-  v2,
-  v3,
-  v4,
-}) {
+export default function Recommendations({ user, status, workout_types }) {
   return (
     <>
       <Head>
@@ -37,16 +29,21 @@ export default function Recommendations({
             </p>
           </>
         ) : (
-          ""
+          <>
+            <p>
+              We've currently got recommendations for the following workout
+              types:
+            </p>
+            <br />
+            {workout_types.map(function (workout) {
+              return (
+                <p>
+                  <a href={"/recommendations/" + workout._id}>{workout.name}</a>
+                </p>
+              );
+            })}
+          </>
         )}
-
-        {Object.keys(v1).map(function (key) {
-          return (
-            <div>
-              Key: {key}, Value: {v1[key]}
-            </div>
-          );
-        })}
       </div>
     </>
   );
@@ -65,21 +62,23 @@ export async function getServerSideProps(ctx) {
   const user = await db.collection("users").findOne(ObjectId(session.id));
   const recs = await db
     .collection("recommendations")
-    .findOne({ user_id: session.id });
+    .findOne({ user_id: session.id }, { v4: 1 });
 
-  // Iterate over these, and get the song data for each
-  for (const workout in recs.v4) {
+  const workout_types = await db
+    .collection("workout_types")
+    .find({ name: { $in: Object.keys(recs.v4) } })
+    .toArray();
+
+  for (const workout of workout_types) {
+    workout._id = workout._id.toString();
   }
+  workout_types.sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     props: {
       user: session.user,
       status: user.status ? user.status : "none",
-      user_id: session.id,
-      v1: recs.v1,
-      v2: recs.v2,
-      v3: recs.v3,
-      v4: recs.v4,
+      workout_types: workout_types,
     },
   };
 }

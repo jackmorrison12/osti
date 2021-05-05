@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/client";
+import { getSession, signOut } from "next-auth/client";
 import Link from "next/link";
 import { connectToDatabase } from "../middleware/mongodb";
 import { ObjectId } from "mongodb";
@@ -82,7 +82,7 @@ export default function Profile({
             {" "}
             <button
               className={
-                "text-white font-bold py-2 px-4 rounded-full mt-5 hover:bg-google-light bg-google"
+                "text-white font-bold py-2 px-4 rounded-full m-4 hover:bg-google-light bg-google"
               }
             >
               Connect to google
@@ -93,7 +93,7 @@ export default function Profile({
         {!["none", "googlefit_linked", "lastfm_linked"].includes(status) ? (
           <button
             className={
-              "text-white font-bold py-2 px-4 rounded-full mt-5 " +
+              "text-white font-bold py-2 px-4 rounded-full m-4 " +
               (status == "api_linked"
                 ? "hover:bg-blue-700 bg-blue-500"
                 : "bg-blue-300")
@@ -107,6 +107,14 @@ export default function Profile({
         ) : (
           ""
         )}
+        <br />
+
+        <button
+          className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={signOut}
+        >
+          Sign out
+        </button>
       </div>
     </>
   );
