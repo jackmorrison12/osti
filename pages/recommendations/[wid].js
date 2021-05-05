@@ -8,10 +8,8 @@ export default function Recommendation({
   user,
   status,
   user_id,
-  v1,
-  v2,
-  v3,
-  v4,
+  top_songs,
+  top_recs,
   wid,
   workout,
 }) {
@@ -42,7 +40,18 @@ export default function Recommendation({
           <title>{workout.name} Recommendations</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <p>Recommendations for id: {workout.name}</p>
+        <div className="container mx-auto text-center">
+          <h1 className="text-4xl xl:text-6xl m-12">
+            Your {workout.name} Recommendations
+          </h1>
+          {top_recs.map((rec, i) => (
+            <>
+              <p>
+                {i + 1}: {rec.name} - {rec.artist.name}
+              </p>
+            </>
+          ))}
+        </div>
       </>
     );
   }
@@ -66,10 +75,52 @@ export async function getServerSideProps(ctx) {
 
   let workout = await db.collection("workout_types").findOne(ObjectId(wid));
 
+  let top_songs_data = [];
+  let top_recs_data = [];
+
   if (workout) {
     workout._id = workout._id.toString();
+
     if (!recs.v4[workout.name]) {
       workout.no_recs = true;
+    } else {
+      let top_songs = recs.v1[workout.name];
+      let top_recs = recs.v4[workout.name];
+
+      let song_ids = new Set();
+
+      for (const song of top_songs) {
+        song_ids.add(ObjectId(song));
+      }
+
+      for (const song of top_recs) {
+        song_ids.add(ObjectId(song.track_id));
+      }
+
+      song_ids = [...song_ids];
+
+      let song_data = await db
+        .collection("tracks")
+        .find({ _id: { $in: song_ids } })
+        .toArray();
+
+      let song_data_map = {};
+
+      for (const data of song_data) {
+        song_data_map[data._id.toString()] = data;
+      }
+
+      for (const song of top_songs) {
+        let data = song_data_map[song];
+        data._id = data._id.toString();
+        top_songs_data.push(data);
+      }
+
+      for (const song of top_recs) {
+        let data = song_data_map[song.track_id];
+        data._id = data._id.toString();
+        top_recs_data.push(data);
+      }
     }
   }
 
@@ -78,10 +129,8 @@ export async function getServerSideProps(ctx) {
       user: session.user,
       status: user.status ? user.status : "none",
       user_id: session.id,
-      v1: recs.v1,
-      v2: recs.v2,
-      v3: recs.v3,
-      v4: recs.v4,
+      top_songs: top_songs_data,
+      top_recs: top_recs_data,
       wid: wid,
       workout: workout,
     },

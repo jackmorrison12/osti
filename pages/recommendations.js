@@ -12,7 +12,7 @@ export default function Recommendations({ user, status, workout_types }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="container mx-auto text-center">
-        <h1 className="text-6xl m-12">Recommendations</h1>
+        <h1 className="text-4xl xl:text-6xl m-12">Recommendations</h1>
 
         {status != "fetched" ? (
           <>
