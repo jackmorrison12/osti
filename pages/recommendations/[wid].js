@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client";
 import { connectToDatabase } from "../../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
+import RecList from "../../components/recommendations/rec_list";
 
 export default function Recommendation({
   user,
@@ -46,75 +47,13 @@ export default function Recommendation({
           </h1>
           <div className="grid grid-cols-2">
             <div className="col-span-2 xl:col-span-1">
-              <h1 className="text-2xl xl:text-3xl m-12">Top Recommendations</h1>
-              <table className="table-fixed w-full">
-                <thead>
-                  <tr>
-                    <th className="w-1/12"></th>
-                    <th className="w-2/12">Pos</th>
-                    <th className="w-5/12">Track</th>
-                    <th className="w-4/12">Artist</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {" "}
-                  {top_recs.map((rec, i) => (
-                    <tr>
-                      <td>
-                        <a href={rec.lastfm_url}>
-                          <img className="inline" src={rec.image_url} />
-                        </a>
-                      </td>
-                      <td>{i + 1}</td>
-                      <td>{rec.name}</td>
-                      <td>
-                        {rec.artists
-                          .map(function (a) {
-                            return a.name;
-                          })
-                          .join(", ")}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <RecList title="Top Recommendations" recs={top_recs} />
             </div>
             <div className="col-span-2 xl:col-span-1">
-              <h1 className="text-2xl xl:text-3xl m-12">
-                Most Listened to {workout.name} Songs
-              </h1>
-              <table className="table-fixed w-full">
-                <thead>
-                  <tr>
-                    <th className="w-1/12"></th>
-                    <th className="w-2/12">Pos</th>
-                    <th className="w-5/12">Track</th>
-                    <th className="w-4/12">Artist</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {top_songs.map((song, i) => (
-                    <tr>
-                      <td>
-                        <a href={song.lastfm_url}>
-                          <img className="inline" src={song.image_url} />
-                        </a>
-                      </td>
-                      <td>{i + 1}</td>
-                      <td>{song.name}</td>
-                      <td>
-                        {song.artists
-                          ? song.artists
-                              .map(function (a) {
-                                return a.name;
-                              })
-                              .join(", ")
-                          : song.artist}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <RecList
+                title={"Most Listened to " + workout.name + " Songs"}
+                recs={top_songs}
+              />
             </div>
           </div>
         </div>
