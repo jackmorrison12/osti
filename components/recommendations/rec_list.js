@@ -19,7 +19,7 @@ export const RecList = (props) => (
       <tbody>
         {" "}
         {props.recs.map((rec, i) => (
-          <RecRow rec={rec} i={i} />
+          <RecRow rec={rec} i={i} wid={props.wid} />
         ))}
       </tbody>
     </table>

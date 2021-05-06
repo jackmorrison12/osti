@@ -47,13 +47,14 @@ export default function Recommendation({
           </h1>
           <div className="grid grid-cols-2">
             <div className="col-span-2 xl:col-span-1">
-              <RecList title="Top Recommendations" recs={top_recs} />
+              <RecList title="Top Recommendations" recs={top_recs} wid={wid} />
             </div>
             <div className="col-span-2 xl:col-span-1">
               <RecList
                 title={"Most Listened to " + workout.name + " Songs"}
                 recs={top_songs}
                 counts={true}
+                wid={wid}
               />
             </div>
           </div>
@@ -140,7 +141,6 @@ export async function getServerSideProps(ctx) {
       }
     }
   }
-
   return {
     props: {
       user: session.user,
