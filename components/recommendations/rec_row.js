@@ -7,7 +7,9 @@ export const RecRow = (props) => (
         <img className="inline" src={props.rec.image_url} />
       </a>
     </td>
-    <td className="text-center">{props.i + 1}</td>
+    <td className="text-center">
+      {props.rec.count ? props.rec.count : props.i + 1}
+    </td>
     <td>{props.rec.name}</td>
     <td>
       {props.rec.artists

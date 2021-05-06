@@ -8,7 +8,9 @@ export const RecList = (props) => (
       <thead>
         <tr>
           <th className="w-1/12"></th>
-          <th className="w-1/12 text-center">Pos</th>
+          <th className="w-1/12 text-center">
+            {props.counts ? "Count" : "Pos"}
+          </th>
           <th className="w-4/12">Track</th>
           <th className="w-4/12">Artist</th>
           <th className="w-2/12">Boost</th>

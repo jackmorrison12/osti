@@ -53,6 +53,7 @@ export default function Recommendation({
               <RecList
                 title={"Most Listened to " + workout.name + " Songs"}
                 recs={top_songs}
+                counts={true}
               />
             </div>
           </div>
@@ -95,7 +96,7 @@ export async function getServerSideProps(ctx) {
       let song_ids = new Set();
 
       for (const song of top_songs) {
-        song_ids.add(ObjectId(song));
+        song_ids.add(ObjectId(song.track_id));
       }
 
       for (const song of top_recs) {
@@ -115,16 +116,17 @@ export async function getServerSideProps(ctx) {
         song_data_map[data._id.toString()] = data;
       }
 
-      for (const song of top_songs) {
-        let data = song_data_map[song];
-        data._id = data._id.toString();
-        top_songs_data.push(data);
-      }
-
       for (const song of top_recs) {
-        let data = song_data_map[song.track_id];
+        let data = Object.assign({}, song_data_map[song.track_id]);
         data._id = data._id.toString();
         top_recs_data.push(data);
+      }
+
+      for (const song of top_songs) {
+        let data = Object.assign({}, song_data_map[song.track_id]);
+        data._id = data._id.toString();
+        data.count = song.score;
+        top_songs_data.push(data);
       }
     }
   }
