@@ -42,7 +42,7 @@ export default function Recommendation({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl xl:text-6xl m-12">
+          <h1 className="text-4xl xl:text-6xl m-6 xl:m-12">
             Your {workout.name} Recommendations
           </h1>
           <div className="grid grid-cols-2">

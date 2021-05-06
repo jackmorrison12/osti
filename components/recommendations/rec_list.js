@@ -1,38 +1,23 @@
 import React from "react";
+import RecRow from "./rec_row";
 
 export const RecList = (props) => (
   <>
-    <h1 className="text-2xl xl:text-3xl m-12">{props.title}</h1>
-    <table className="table-fixed w-full">
+    <h1 className="text-2xl xl:text-3xl m-3 xl:m-12 xl:mt-0">{props.title}</h1>
+    <table className="table-fixed w-full text-left">
       <thead>
         <tr>
           <th className="w-1/12"></th>
-          <th className="w-2/12">Pos</th>
-          <th className="w-5/12">Track</th>
+          <th className="w-1/12 text-center">Pos</th>
+          <th className="w-4/12">Track</th>
           <th className="w-4/12">Artist</th>
+          <th className="w-2/12">Boost</th>
         </tr>
       </thead>
       <tbody>
         {" "}
         {props.recs.map((rec, i) => (
-          <tr>
-            <td>
-              <a href={rec.lastfm_url}>
-                <img className="inline" src={rec.image_url} />
-              </a>
-            </td>
-            <td>{i + 1}</td>
-            <td>{rec.name}</td>
-            <td>
-              {rec.artists
-                ? rec.artists
-                    .map(function (a) {
-                      return a.name;
-                    })
-                    .join(", ")
-                : rec.artist}
-            </td>
-          </tr>
+          <RecRow rec={rec} i={i} />
         ))}
       </tbody>
     </table>
