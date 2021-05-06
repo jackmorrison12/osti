@@ -114,6 +114,16 @@ export async function getServerSideProps(ctx) {
 
       for (const data of song_data) {
         song_data_map[data._id.toString()] = data;
+        song_data_map[data._id.toString()].boost = 0;
+      }
+
+      let boosts = await db
+        .collection("boosts")
+        .find({ user_id: session.id, workout_id: workout._id })
+        .toArray();
+
+      for (const boost of boosts) {
+        song_data_map[boost.track_id].boost = boost.value;
       }
 
       for (const song of top_recs) {
