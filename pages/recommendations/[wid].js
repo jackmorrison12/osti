@@ -88,11 +88,11 @@ export async function getServerSideProps(ctx) {
   if (workout) {
     workout._id = workout._id.toString();
 
-    if (!recs.v4[workout.name]) {
+    if (!recs.v5[workout.name]) {
       workout.no_recs = true;
     } else {
       let top_songs = recs.v1[workout.name];
-      let top_recs = recs.v4[workout.name];
+      let top_recs = recs.v5[workout.name];
 
       let song_ids = new Set();
 
@@ -124,7 +124,9 @@ export async function getServerSideProps(ctx) {
         .toArray();
 
       for (const boost of boosts) {
-        song_data_map[boost.track_id].boost = boost.value;
+        if (boost.track_id in song_data_map) {
+          song_data_map[boost.track_id].boost = boost.value;
+        }
       }
 
       for (const song of top_recs) {
