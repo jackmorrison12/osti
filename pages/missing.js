@@ -16,7 +16,7 @@ export default function Missing({ user, status, unknown_tracks }) {
         <h1 className="text-4xl xl:text-6xl m-12">Missing Songs</h1>
         <h2 className="text-xl m-12">
           Here are some songs you've listened to which we haven't been able to
-          find on Spotify <br /> Just paste in the Spotify URI to add them to
+          find on Spotify <br /> Just paste in the Spotify URL to add them to
           our system!
         </h2>
         <MissingList title="Missing Songs" unknown_tracks={unknown_tracks} />
