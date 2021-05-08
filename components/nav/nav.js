@@ -10,6 +10,7 @@ export default function NavigationBar(props) {
       <Brand brandName="Osti" />
       <NavigationLink link="/profile">Profile</NavigationLink>
       <NavigationLink link="/recommendations">Recommendations</NavigationLink>
+      <NavigationLink link="/missing">Missing Songs</NavigationLink>
       {loading ? (
         ""
       ) : session && session.id == "606c78c40326f734f14f326b" ? (
