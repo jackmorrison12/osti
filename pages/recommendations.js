@@ -30,18 +30,29 @@ export default function Recommendations({ user, status, workout_types }) {
           </>
         ) : (
           <>
-            <p>
-              We've currently got recommendations for the following workout
-              types:
-            </p>
-            <br />
-            {workout_types.map(function (workout) {
-              return (
+            {workout_types ? (
+              <>
                 <p>
-                  <a href={"/recommendations/" + workout._id}>{workout.name}</a>
+                  We've currently got recommendations for the following workout
+                  types:
                 </p>
-              );
-            })}
+                <br />{" "}
+                {workout_types.map(function (workout) {
+                  return (
+                    <p>
+                      <a href={"/recommendations/" + workout._id}>
+                        {workout.name}
+                      </a>
+                    </p>
+                  );
+                })}
+              </>
+            ) : (
+              <p>
+                We've currently not got any recommendations for you yet! <br />
+                Complete your first workout with music to get recommendations
+              </p>
+            )}
           </>
         )}
       </div>
@@ -64,15 +75,18 @@ export async function getServerSideProps(ctx) {
     .collection("recommendations")
     .findOne({ user_id: session.id }, { v4: 1 });
 
-  const workout_types = await db
-    .collection("workout_types")
-    .find({ name: { $in: Object.keys(recs.v4) } })
-    .toArray();
+  let workout_types = null;
+  if (recs) {
+    workout_types = await db
+      .collection("workout_types")
+      .find({ name: { $in: Object.keys(recs.v4) } })
+      .toArray();
 
-  for (const workout of workout_types) {
-    workout._id = workout._id.toString();
+    for (const workout of workout_types) {
+      workout._id = workout._id.toString();
+    }
+    workout_types.sort((a, b) => a.name.localeCompare(b.name));
   }
-  workout_types.sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     props: {
