@@ -10,6 +10,7 @@
   "dependencies": {
     "autoprefixer": "^10.2.3",
     "googleapis": "^67.0.0",
+    "javascript-time-ago": "^2.3.5",
     "lastfm": "^0.9.3",
     "mongodb": "^3.6.3",
     "next": "10.0.5",
