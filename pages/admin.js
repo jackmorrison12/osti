@@ -39,6 +39,16 @@ export default function Profile({ user }) {
             Trigger v2
           </button>
         </a>
+        <br />
+        <a href="https://osti-recommender.herokuapp.com/generate_all_playlists">
+          <button
+            className={
+              "text-white font-bold py-2 px-4 rounded-full mt-5 bg-blue-500 hover:bg-blue-700"
+            }
+          >
+            Trigger playlist update
+          </button>
+        </a>
       </div>
     </>
   );
