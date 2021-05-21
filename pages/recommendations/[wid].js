@@ -4,6 +4,7 @@ import { connectToDatabase } from "../../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
 import RecList from "../../components/recommendations/rec_list";
+import Stats from "../../components/recommendations/stats";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 TimeAgo.addLocale(en);
@@ -52,126 +53,11 @@ export default function Recommendation({
           <h1 className="text-4xl xl:text-6xl m-6 xl:m-12">
             Your {workout.name} Recommendations
           </h1>
-          <div className="pb-10">
-            {custom_stats ? (
-              <>
-                <h1 className="pb-5">
-                  Here are your custom {workout.name} stats:
-                </h1>{" "}
-                <table className="table-fixed w-full">
-                  <thead>
-                    <tr>
-                      <th className="w-2/12">Average Length</th>
-                      <th className="w-2/12">Average Calories</th>
-                      <th className="w-2/12">Average Heart Rate</th>
-                      <th className="w-2/12">Average Distance</th>
-                      <th className="w-2/12">Average Speed</th>
-                      <th className="w-2/12">Average Steps</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        {custom_stats.stats.average_length
-                          ? custom_stats.stats.average_length.toFixed(0) +
-                            " minutes"
-                          : ""}
-                      </td>
-                      <td>
-                        {custom_stats.stats.average_calories
-                          ? custom_stats.stats.average_calories.toFixed(0) +
-                            " kcal"
-                          : ""}
-                      </td>
-                      <td>
-                        {custom_stats.stats.average_heart_rate
-                          ? custom_stats.stats.average_heart_rate.toFixed(0) +
-                            " bpm"
-                          : ""}
-                      </td>
-                      <td>
-                        {custom_stats.stats.average_distance
-                          ? (
-                              custom_stats.stats.average_distance / 1000
-                            ).toFixed(2) + " km"
-                          : "n/a"}
-                      </td>
-                      <td>
-                        {custom_stats.stats.average_speed
-                          ? custom_stats.stats.average_speed.toFixed(2) + " m/s"
-                          : "n/a"}
-                      </td>
-                      <td>
-                        {custom_stats.stats.average_steps
-                          ? custom_stats.stats.average_steps.toFixed(0) +
-                            " steps"
-                          : "n/a"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </>
-            ) : (
-              <>
-                <h1 className="pb-5">
-                  Here are your default {workout.name} stats:
-                </h1>
-                <table className="table-fixed w-full">
-                  <thead>
-                    <tr>
-                      <th className="w-2/12">Average Length</th>
-                      <th className="w-2/12">Average Calories</th>
-                      <th className="w-2/12">Average Heart Rate</th>
-                      <th className="w-2/12">Average Distance</th>
-                      <th className="w-2/12">Average Speed</th>
-                      <th className="w-2/12">Average Steps</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        {default_stats.stats.average_length
-                          ? default_stats.stats.average_length.toFixed(0) +
-                            " minutes"
-                          : ""}
-                      </td>
-                      <td>
-                        {default_stats.stats.average_calories
-                          ? default_stats.stats.average_calories.toFixed(0) +
-                            " kcal"
-                          : ""}
-                      </td>
-                      <td>
-                        {default_stats.stats.average_heart_rate
-                          ? default_stats.stats.average_heart_rate.toFixed(0) +
-                            " bpm"
-                          : ""}
-                      </td>
-                      <td>
-                        {default_stats.stats.average_distance
-                          ? (
-                              default_stats.stats.average_distance / 1000
-                            ).toFixed(2) + " km"
-                          : "n/a"}
-                      </td>
-                      <td>
-                        {default_stats.stats.average_speed
-                          ? default_stats.stats.average_speed.toFixed(2) +
-                            " m/s"
-                          : "n/a"}
-                      </td>
-                      <td>
-                        {default_stats.stats.average_steps
-                          ? default_stats.stats.average_steps.toFixed(0) +
-                            " steps"
-                          : "n/a"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </>
-            )}
-          </div>
+          <Stats
+            custom_stats={custom_stats}
+            default_stats={default_stats}
+            workout={workout}
+          />
           <div className="pb-10">
             {playlists.length > 0 ? (
               <>
@@ -206,7 +92,7 @@ export default function Recommendation({
                         <td>
                           <a href={"/playlists/" + playlist._id}>
                             <button className="hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded">
-                              View/Download Playlist
+                              View / Download Playlist
                             </button>
                           </a>
                         </td>
@@ -360,7 +246,6 @@ export async function getServerSideProps(ctx) {
         .find({ user_id: session.id, workout_id: workout._id })
         .sort({ default: -1 })
         .toArray();
-      console.log(stats);
 
       for (const stat of stats) {
         stat._id = stat._id.toString();
