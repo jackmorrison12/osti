@@ -61,7 +61,6 @@ handler.post(async (req, res) => {
         }
       );
     }
-    // console.log(track_data);
     track.spotify = {};
     track.spotify.uri = track_data.body.uri;
     track.spotify.preview = track_data.body.preview_url;
@@ -102,7 +101,6 @@ handler.post(async (req, res) => {
         }
       );
     }
-    // console.log(track_features);
     track.features.danceability = track_features.body.danceability;
     track.features.energy = track_features.body.energy;
     track.features.key = track_features.body.key;
@@ -116,7 +114,6 @@ handler.post(async (req, res) => {
     track.features.tempo = track_features.body.tempo;
     track.features.time_signature = track_features.body.time_signature;
 
-    // console.log(track);
     //   Add it to the track with req.body.track_id in the db
 
     let doc = await req.db.collection("tracks").updateOne(

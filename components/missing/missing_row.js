@@ -13,8 +13,6 @@ export default function MissingRow(props) {
       btnRef.current.setAttribute("disabled", "disabled");
       btnRef.current.setAttribute("hidden", "true");
     }
-    console.log(uri);
-    console.log(props.track._id);
     await fetch("/api/addUri", {
       method: "POST",
       body: JSON.stringify({

@@ -49,12 +49,6 @@ export async function getServerSideProps(ctx) {
     track_id_map[track._id] = track;
     track_ids.push(track._id);
   }
-  //   console.log(tracks);
-
-  //   const user_tracks = await db
-  //     .collection("listens")
-  //     .find({ user_id: session.id, song_id: { $in: track_ids } })
-  //     .toArray();
 
   let user_tracks = await db
     .collection("listens")

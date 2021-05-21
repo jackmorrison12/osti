@@ -39,7 +39,6 @@ export default function Stats({ default_stats, custom_stats, workout }) {
         "Content-Type": "application/json",
       },
     });
-    console.log(default_stats.stats);
   }
 
   async function valueUpdate(event) {

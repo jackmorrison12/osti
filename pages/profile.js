@@ -37,7 +37,6 @@ export default function Profile({
     fetch(url + "/setup", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         setResult(result);
       })
       .catch((error) => console.log("error", error));
