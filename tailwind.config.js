@@ -12,6 +12,10 @@ module.exports = {
           DEFAULT: "#3cba54",
           light: "#89c995",
         },
+        spotify: {
+          DEFAULT: "#1DB954",
+          light: "#8ef5b2",
+        },
       },
     },
   },

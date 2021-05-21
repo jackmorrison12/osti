@@ -6,10 +6,13 @@ import Head from "next/head";
 import { google } from "googleapis";
 import { useState } from "react";
 
+var SpotifyWebApi = require("spotify-web-api-node");
+
 export default function Profile({
   user,
   lastfm,
   google_url,
+  spotify_url,
   status,
   user_id,
   backend_url,
@@ -69,7 +72,7 @@ export default function Profile({
                 "text-white font-bold py-2 px-4 rounded-full mt-5 hover:bg-lastfm-light bg-lastfm"
               }
             >
-              Connect to lastfm
+              Connect to Last FM
             </button>
           </a>
         )}
@@ -84,10 +87,26 @@ export default function Profile({
                 "text-white font-bold py-2 px-4 rounded-full m-4 hover:bg-google-light bg-google"
               }
             >
-              Connect to google
+              Connect to Google
             </button>
           </a>
         )}
+        <br />
+        {!spotify_url ? (
+          <p>Your Spotify account is connected </p>
+        ) : (
+          <a href={spotify_url}>
+            {" "}
+            <button
+              className={
+                "text-white font-bold py-2 px-4 rounded-full m-4 hover:bg-spotify-light bg-spotify"
+              }
+            >
+              Connect to Spotify
+            </button>
+          </a>
+        )}
+        <br />
 
         {!["none", "googlefit_linked", "lastfm_linked"].includes(status) ? (
           <button
@@ -107,7 +126,6 @@ export default function Profile({
           ""
         )}
         <br />
-
         <button
           className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
           onClick={signOut}
@@ -130,7 +148,8 @@ export async function getServerSideProps(ctx) {
   }
 
   const user = await db.collection("users").findOne(ObjectId(session.id));
-  let url = null;
+  let google_url = null;
+  let spotify_url = null;
 
   if (!user.google_tokens) {
     const oauth2Client = new google.auth.OAuth2(
@@ -146,17 +165,45 @@ export async function getServerSideProps(ctx) {
       "https://www.googleapis.com/auth/fitness.location.read",
     ];
 
-    url = oauth2Client.generateAuthUrl({
+    google_url = oauth2Client.generateAuthUrl({
       access_type: "offline",
       scope: scopes,
     });
+  }
+
+  if (!user.spotify_tokens) {
+    var scopes = [
+        "ugc-image-upload",
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "user-read-currently-playing",
+        "app-remote-control",
+        "streaming",
+        "playlist-modify-public",
+        "playlist-modify-private",
+        "playlist-read-private",
+        "playlist-read-collaborative",
+        "user-read-email",
+      ],
+      redirectUri = process.env.NEXTAUTH_URL + "/api/auth/spotify",
+      clientId = process.env.SPOTIFY_ID,
+      state = "connect";
+
+    // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
+    var spotifyApi = new SpotifyWebApi({
+      redirectUri: redirectUri,
+      clientId: clientId,
+    });
+    // Create the authorization URL
+    spotify_url = spotifyApi.createAuthorizeURL(scopes, state);
   }
 
   return {
     props: {
       user: session.user,
       lastfm: user.lastfm_username ? user.lastfm_username : null,
-      google_url: url,
+      google_url: google_url,
+      spotify_url: spotify_url,
       status: user.status ? user.status : "none",
       user_id: session.id,
       backend_url: process.env.BACKEND_URL,
