@@ -1,9 +1,8 @@
-import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { getSession } from "next-auth/client";
 import { connectToDatabase } from "../../middleware/mongodb";
 import { ObjectId } from "mongodb";
 import Head from "next/head";
-import RecList from "../../components/recommendations/rec_list";
 
 export default function Playlist({
   user,
@@ -12,6 +11,7 @@ export default function Playlist({
   pid,
   playlist,
   workout,
+  has_spotify,
 }) {
   if (!playlist) {
     return (
@@ -24,11 +24,29 @@ export default function Playlist({
       </>
     );
   } else {
+    const [spotifyPlaylist, setSpotifyPlaylist] = useState(
+      playlist.spotify_playlist ? playlist.spotify_playlist : null
+    );
+
     function millisToMinutesAndSeconds(millis) {
       var minutes = Math.floor(millis / 60000);
       var seconds = ((millis % 60000) / 1000).toFixed(0);
       return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
     }
+    async function savePlaylist(event) {
+      let res = await fetch("/api/savePlaylist", {
+        method: "POST",
+        body: JSON.stringify({
+          playlist_id: playlist._id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      res = await res.json();
+      setSpotifyPlaylist(res);
+    }
+
     return (
       <>
         <Head>
@@ -39,6 +57,31 @@ export default function Playlist({
           <h1 className="text-4xl xl:text-6xl m-6 xl:m-12">
             Your {workout.name} Playlist
           </h1>
+          {has_spotify ? (
+            <>
+              {spotifyPlaylist ? (
+                <>
+                  <h2 className="mb-5">
+                    This playlist is currently saved to Spotify as:
+                  </h2>
+                  <a href={spotifyPlaylist.url}>
+                    <button className="hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded mb-10">
+                      {spotifyPlaylist.name}
+                    </button>
+                  </a>
+                </>
+              ) : (
+                <button
+                  onClick={savePlaylist}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded mb-10"
+                >
+                  Save Playlist to Spotify
+                </button>
+              )}
+            </>
+          ) : (
+            ""
+          )}
           <table className="table-fixed w-full text-left">
             <thead>
               <tr>
@@ -93,6 +136,8 @@ export async function getServerSideProps(ctx) {
 
   const user = await db.collection("users").findOne(ObjectId(session.id));
 
+  const has_spotify = user.spotify_tokens;
+
   const playlist = await db
     .collection("playlists")
     .findOne({ _id: ObjectId(pid) });
@@ -142,6 +187,7 @@ export async function getServerSideProps(ctx) {
       pid: pid,
       playlist: playlist,
       workout: workout,
+      has_spotify: has_spotify,
     },
   };
 }
