@@ -41,9 +41,14 @@ handler.post(async (req, res) => {
     .project({ "spotify.uri": 1 })
     .toArray();
 
-  let tids = [];
+  let track_map = {};
   for (const track of spotify_uris) {
-    tids.push(track.spotify.uri);
+    track_map[track._id.toString()] = track.spotify.uri;
+  }
+
+  let tids = [];
+  for (const track of track_ids) {
+    tids.push(track_map[track]);
   }
   await spotifyApi.play({
     uris: tids,
