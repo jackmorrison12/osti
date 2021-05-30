@@ -29,9 +29,21 @@ handler.post(async (req, res) => {
   spotifyApi.setAccessToken(access_token.body["access_token"]);
 
   await spotifyApi.setShuffle(false);
+
+  let track_ids = [];
+  for (const track of req.body.tids) {
+    track_ids.push(ObjectID(track));
+  }
+
+  let spotify_uris = await req.db
+    .collection("tracks")
+    .find({ _id: { $in: track_ids } })
+    .project({ "spotify.uri": 1 })
+    .toArray();
+
   let tids = [];
-  for (const tid of req.body.tids) {
-    tids.push("spotify:track:" + tid);
+  for (const track of spotify_uris) {
+    tids.push(track.spotify.uri);
   }
   await spotifyApi.play({
     uris: tids,

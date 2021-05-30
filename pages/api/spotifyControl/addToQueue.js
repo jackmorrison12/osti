@@ -28,7 +28,11 @@ handler.post(async (req, res) => {
 
   spotifyApi.setAccessToken(access_token.body["access_token"]);
 
-  await spotifyApi.addToQueue(req.body.uri);
+  let spotify_uri = await req.db
+    .collection("tracks")
+    .findOne({ _id: ObjectID(req.body.tid) });
+
+  await spotifyApi.addToQueue(spotify_uri.spotify.uri);
 
   res.status(200).json({ success: true });
 });
