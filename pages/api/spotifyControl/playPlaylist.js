@@ -32,7 +32,6 @@ handler.post(async (req, res) => {
     context_uri: "spotify:playlist:" + req.body.pid,
   });
 
-  // {"id": "4CovmGpYmJhAOBNOcC3MCw", "url": "https://open.spotify.com/playlist/4CovmGpYmJhAOBNOcC3MCw", "name": "Osti: Core training Playlist"}
   res.status(200).json({ success: true });
 });
 export default handler;
