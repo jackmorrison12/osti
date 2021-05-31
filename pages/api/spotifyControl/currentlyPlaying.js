@@ -30,6 +30,18 @@ handler.post(async (req, res) => {
 
   let state = await spotifyApi.getMyCurrentPlaybackState();
 
-  res.status(200).json(state.body);
+  if (state.body.is_playing) {
+    const track = await req.db.collection("tracks").findOne({
+      name: state.body.item.name,
+      "artist.name": state.body.item.artists[0].name,
+    });
+    if (track) {
+      res.status(200).json({ track_id: track._id.toString() });
+    } else {
+      res.status(200).json({ track_id: null });
+    }
+  } else {
+    res.status(200).json({ track_id: null });
+  }
 });
 export default handler;
