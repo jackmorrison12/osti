@@ -31,14 +31,22 @@ handler.post(async (req, res) => {
   let state = await spotifyApi.getMyCurrentPlaybackState();
 
   if (state.body.is_playing) {
-    const track = await req.db.collection("tracks").findOne({
-      name: state.body.item.name,
-      "artist.name": state.body.item.artists[0].name,
+    let track = await req.db.collection("tracks").findOne({
+      "spotify.uri": state.body.item.uri,
     });
     if (track) {
+      console.log(track._id.toString());
       res.status(200).json({ track_id: track._id.toString() });
     } else {
-      res.status(200).json({ track_id: null });
+      track = await req.db.collection("tracks").findOne({
+        name: state.body.item.name,
+        "artist.name": state.body.item.artists[0].name,
+      });
+      if (track) {
+        res.status(200).json({ track_id: track._id.toString() });
+      } else {
+        res.status(200).json({ track_id: null });
+      }
     }
   } else {
     res.status(200).json({ track_id: null });
