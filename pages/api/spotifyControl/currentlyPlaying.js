@@ -35,7 +35,6 @@ handler.post(async (req, res) => {
       "spotify.uri": state.body.item.uri,
     });
     if (track) {
-      console.log(track._id.toString());
       res.status(200).json({ track_id: track._id.toString() });
     } else {
       track = await req.db.collection("tracks").findOne({
