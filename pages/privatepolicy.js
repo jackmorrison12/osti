@@ -152,8 +152,6 @@ export default function PrivatePolicy() {
         </p>
         <ul className="list-disc list-inside p-5">
           <li>Google</li>
-          <li>Facebook</li>
-          <li>Twitter</li>
         </ul>
         <p>
           If You decide to register through or otherwise grant us access to a
