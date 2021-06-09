@@ -123,11 +123,9 @@ export default function Stats({ default_stats, custom_stats, workout }) {
                       id="average_distance"
                       className="dark:bg-black border rounded w-full xl:w-1/2 text-right"
                       onChange={valueUpdate}
-                      defaultValue={(
-                        stats.stats.average_distance / 1000
-                      ).toFixed(2)}
+                      defaultValue={stats.stats.average_distance.toFixed(0)}
                     ></input>{" "}
-                    km
+                    m
                   </>
                 ) : (
                   "n/a"
