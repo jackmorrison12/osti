@@ -187,7 +187,7 @@ export async function getServerSideProps(ctx) {
       pid: pid,
       playlist: playlist,
       workout: workout,
-      has_spotify: has_spotify,
+      has_spotify: has_spotify ? has_spotify : false,
     },
   };
 }

@@ -7,10 +7,6 @@ var url = require("url");
 const handler = nextConnect();
 handler.use(middleware);
 
-// require("dotenv").config({
-//   path: `.env.local`,
-// });
-
 var SpotifyWebApi = require("spotify-web-api-node");
 
 var spotifyApi = new SpotifyWebApi({
@@ -115,7 +111,6 @@ handler.post(async (req, res) => {
     track.features.time_signature = track_features.body.time_signature;
 
     //   Add it to the track with req.body.track_id in the db
-
     let doc = await req.db.collection("tracks").updateOne(
       {
         _id: ObjectID(req.body.track_id),
@@ -132,7 +127,6 @@ handler.post(async (req, res) => {
         },
       }
     );
-    console.log(doc);
     res.status(200).json(doc);
   }
 });

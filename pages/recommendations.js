@@ -70,10 +70,24 @@ export async function getServerSideProps(ctx) {
     return {};
   }
 
-  const user = await db.collection("users").findOne(ObjectId(session.id));
-  const recs = await db
+  var user = await db.collection("users").findOne(ObjectId(session.id));
+  var recs = await db
     .collection("recommendations")
     .findOne({ user_id: session.id }, { v4: 1 });
+
+  // For demo, show some results
+  if (
+    !user.status &&
+    Date.now() > 1624345200000 &&
+    Date.now() < 1624363200000
+  ) {
+    user = await db
+      .collection("users")
+      .findOne(ObjectId("606c78c40326f734f14f326b"));
+    recs = await db
+      .collection("recommendations")
+      .findOne({ user_id: "606c78c40326f734f14f326b" }, { v4: 1 });
+  }
 
   let workout_types = null;
   if (recs) {

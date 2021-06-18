@@ -135,10 +135,26 @@ export async function getServerSideProps(ctx) {
     return {};
   }
 
-  const user = await db.collection("users").findOne(ObjectId(session.id));
-  const recs = await db
+  var user = await db.collection("users").findOne(ObjectId(session.id));
+  var recs = await db
     .collection("recommendations")
     .findOne({ user_id: session.id });
+
+  var is_tester = false;
+
+  if (
+    !user.status &&
+    Date.now() > 1624345200000 &&
+    Date.now() < 1624363200000
+  ) {
+    user = await db
+      .collection("users")
+      .findOne(ObjectId("606c78c40326f734f14f326b"));
+    recs = await db
+      .collection("recommendations")
+      .findOne({ user_id: "606c78c40326f734f14f326b" }, { v4: 1 });
+    is_tester = true;
+  }
 
   let workout = await db.collection("workout_types").findOne(ObjectId(wid));
 
@@ -182,7 +198,7 @@ export async function getServerSideProps(ctx) {
         song_data_map[data._id.toString()].boost = 0;
       }
 
-      let boosts = await db
+      var boosts = await db
         .collection("boosts")
         .find({ user_id: session.id, workout_id: workout._id })
         .toArray();
@@ -211,6 +227,18 @@ export async function getServerSideProps(ctx) {
         .find({ user_id: session.id, workout_id: workout._id })
         .sort({ created_at: -1 })
         .toArray();
+
+      if (is_tester) {
+        playlists = await db
+          .collection("playlists")
+          .find({
+            user_id: "606c78c40326f734f14f326b",
+            workout_id: workout._id,
+          })
+          .sort({ created_at: -1 })
+          .toArray();
+      }
+
       track_ids = new Set();
       for (const playlist of playlists) {
         playlist._id = playlist._id.toString();
@@ -246,6 +274,17 @@ export async function getServerSideProps(ctx) {
         .find({ user_id: session.id, workout_id: workout._id })
         .sort({ default: -1 })
         .toArray();
+
+      if (is_tester && stats.length == 0) {
+        stats = await db
+          .collection("user_workout_stats")
+          .find({
+            user_id: "606c78c40326f734f14f326b",
+            workout_id: workout._id,
+          })
+          .sort({ default: -1 })
+          .toArray();
+      }
 
       for (const stat of stats) {
         stat._id = stat._id.toString();
